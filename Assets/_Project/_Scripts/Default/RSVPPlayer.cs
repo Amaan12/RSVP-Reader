@@ -97,18 +97,18 @@ public class RSVPPlayer : MonoBehaviour
             }
 
             // Stop instantly if 0 wpm
-            if (wordsPerMinute <= 0)
+            while (wordsPerMinute <= 0)
             {
-                Pause();
-                yield break;
+                if (!isPlaying) yield break; // stop if user paused manually
+                yield return null;
+                continue;
             }
 
             // Wait dynamically — responsive to speed changes
             float elapsed = 0f;
-            while (elapsed < 60f / wordsPerMinute)
+            while (elapsed < 60f / Mathf.Max(wordsPerMinute, 1f))
             {
-                // If paused or speed hits 0, break out immediately
-                if (!isPlaying || wordsPerMinute <= 0)
+                if (!isPlaying)
                     yield break;
 
                 elapsed += Time.deltaTime;
